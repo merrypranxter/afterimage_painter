@@ -1,0 +1,29 @@
+# afterimage_painter
+
+> paint with color. hold to burn. release to see the ghost. complementary afterimages. the canvas is the eye, not the screen. fbo feedback for temporal decay. interactive painting with the visual system.
+
+**Archetype:** GPGPU_GRID_SIM. **Distinct from** `simultaneous_contrast` (spatial contrast, not temporal adaptation) and `benham_top` (temporal color flicker, not adaptation).
+
+## Adjacency
+- `simultaneous_contrast` — color interaction, different mechanism
+- `pulfrich_effect` — temporal processing, different effect
+- `benham_top` — temporal color, adaptation timescale different
+
+## Visual Targets
+- Mouse/brush painting with saturated colors
+- Burn mode: hold to increase adaptation level
+- Release: afterimage appears in complementary color
+- Decay: afterimage fades over 2–30 seconds
+- Complementary palette: red↔cyan, green↔magenta, blue↔yellow
+- Gallery mode: pre-burn patterns for maximum ghost effect
+
+## Technical Notes
+- Chromatic adaptation: cone photoreceptors bleach under sustained stimulation
+- Complementary color: opponent process theory (red-green, blue-yellow)
+- Decay time: depends on adaptation duration and intensity
+- FBO feedback: temporal buffer stores adaptation state per pixel
+
+---
+This was the original design brief used to seed the repo. The full
+implementation (shaders, modules, docs) now lives under src/ and
+docs/ — see README.md for the current state.

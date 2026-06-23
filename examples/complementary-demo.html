@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>complementary.js demo</title>
+<style>
+  body { margin: 0; background: #111; color: #eee; font: 14px system-ui, sans-serif; padding: 24px; }
+  .row { display: flex; gap: 16px; margin-bottom: 12px; align-items: center; }
+  .swatch { width: 64px; height: 64px; border-radius: 6px; }
+  button { font: inherit; padding: 6px 12px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <h1>complementary.js — palette &amp; complement demo</h1>
+  <p>Standalone use of <code>src/js/complementary.js</code> with no WebGL: cycles the brush palette and shows each color next to its computed complement.</p>
+  <div class="row">
+    <div id="swatch" class="swatch"></div>
+    <div id="complementSwatch" class="swatch"></div>
+    <button id="next">Cycle (C)</button>
+    <span id="label"></span>
+  </div>
+
+  <script type="module">
+    import { PaletteCycler, complement } from '../src/js/complementary.js';
+
+    const cycler = new PaletteCycler();
+    const swatch = document.getElementById('swatch');
+    const complementSwatch = document.getElementById('complementSwatch');
+    const label = document.getElementById('label');
+
+    function toCss(rgb) {
+      return `rgb(${rgb.map((c) => Math.round(c * 255)).join(',')})`;
+    }
+
+    function render() {
+      const color = cycler.color;
+      swatch.style.background = toCss(color);
+      complementSwatch.style.background = toCss(complement(color));
+      label.textContent = `${color.map((c) => c.toFixed(2)).join(', ')} → complement ${complement(color).map((c) => c.toFixed(2)).join(', ')}`;
+    }
+
+    document.getElementById('next').addEventListener('click', () => {
+      cycler.next();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
