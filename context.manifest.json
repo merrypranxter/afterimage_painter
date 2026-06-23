@@ -1,0 +1,23 @@
+{
+  "name": "afterimage_painter",
+  "type": "GPGPU_GRID_SIM",
+  "title": "Afterimage Painter — Burn and Ghost",
+  "brief": "Complementary color afterimages as interactive painting tool. Mouse-paint with saturated colors, hold to burn into the retina, release to see the ghost. Uses FBO feedback for temporal decay. The canvas is the eye, not the screen.",
+  "inputs": [
+    "u_source"
+  ],
+  "outputs": [
+    "grid_state"
+  ],
+  "tags": [
+    "generator",
+    "afterimage-painter"
+  ],
+  "adjacency": [
+    "simultaneous_contrast",
+    "pulfrich_effect",
+    "benham_top"
+  ],
+  "status": "implemented",
+  "batch": "E"
+}

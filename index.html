@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afterimage Painter — Burn and Ghost</title>
+  <style>
+    html, body { margin: 0; overflow: hidden; background: #000; height: 100%; }
+    canvas { display: block; width: 100vw; height: 100vh; touch-action: none; cursor: crosshair; }
+    #hint {
+      position: fixed;
+      bottom: 12px;
+      left: 12px;
+      color: rgba(255, 255, 255, 0.55);
+      font: 12px/1.5 system-ui, sans-serif;
+      pointer-events: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gl"></canvas>
+  <div id="hint">hold to burn · release to see the ghost · space clear · c color · g gallery · ↑/↓ decay</div>
+  <script type="module" src="src/js/main.js"></script>
+</body>
+</html>
