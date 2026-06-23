@@ -25,8 +25,11 @@ if (preset.tick) {
 
 console.log(`${presetName(presetIndex)}: ${stamps.length} stamp(s)`);
 for (const s of stamps) {
+  const size = s.rectWidth !== undefined
+    ? `w=${s.rectWidth.toFixed(3)} h=${s.rectHeight.toFixed(3)}`
+    : `r=${s.radius.toFixed(3)}`;
   console.log(
-    `  (${s.x.toFixed(2)}, ${s.y.toFixed(2)}) r=${s.radius.toFixed(3)} ` +
+    `  (${s.x.toFixed(2)}, ${s.y.toFixed(2)}) ${size} ` +
       `color=[${s.color.map((c) => c.toFixed(2)).join(',')}] shape=${s.shape} target=${s.target}`
   );
 }

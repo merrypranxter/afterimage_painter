@@ -7,10 +7,10 @@ The adaptation buffer `A(x, y)` stores a per-pixel, per-channel accumulator that
 **Burn (brush stamp, additive blend), in `stamp()` in `main.js`:**
 
 ```
-A(t) += burnRate * brushStrength * 0.05 * paintColor   // per stamp
+A(t) += burnRate * brushStrength * 0.12 * paintColor   // per stamp
 ```
 
-The `0.05` factor keeps a single stamp from saturating the buffer instantly — burn should require holding the brush or repainting, matching real photopic adaptation building up over hundreds of milliseconds to seconds.
+The `0.12` factor keeps a single stamp from saturating the buffer instantly — burn should require holding the brush or repainting, matching real photopic adaptation building up over hundreds of milliseconds to seconds.
 
 **Relax (every frame, `adaptation.frag`):**
 

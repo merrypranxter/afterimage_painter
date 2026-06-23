@@ -124,9 +124,19 @@ function createTarget(gl, width, height, fmt) {
 // Generic ping-pong feedback buffer: two equal targets, `read` always
 // points at the most recently written one. swap() flips the pair after
 // a pass renders into `write`.
+function blitTarget(gl, src, dst, srcW, srcH, dstW, dstH) {
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, src.fbo);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, dst.fbo);
+  gl.blitFramebuffer(0, 0, srcW, srcH, 0, 0, dstW, dstH, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+  gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+  gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
+}
+
 export function createPingPongFBO(gl, width, height, fmt = pickBufferFormat(gl)) {
   let a = createTarget(gl, width, height, fmt);
   let b = createTarget(gl, width, height, fmt);
+  let curW = width;
+  let curH = height;
 
   const state = {
     fmt,
@@ -145,13 +155,22 @@ export function createPingPongFBO(gl, width, height, fmt = pickBufferFormat(gl))
       }
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     },
+    // Rescales both targets while preserving prior contents (blitted,
+    // not just reallocated), so a window resize doesn't blank out
+    // in-progress paint/adaptation state.
     resize(gl, w, h) {
+      const newA = createTarget(gl, w, h, fmt);
+      const newB = createTarget(gl, w, h, fmt);
+      blitTarget(gl, a, newA, curW, curH, w, h);
+      blitTarget(gl, b, newB, curW, curH, w, h);
       gl.deleteTexture(a.tex);
       gl.deleteFramebuffer(a.fbo);
       gl.deleteTexture(b.tex);
       gl.deleteFramebuffer(b.fbo);
-      a = createTarget(gl, w, h, fmt);
-      b = createTarget(gl, w, h, fmt);
+      a = newA;
+      b = newB;
+      curW = w;
+      curH = h;
     },
   };
   return state;

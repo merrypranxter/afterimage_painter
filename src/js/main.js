@@ -23,6 +23,7 @@ const BRUSH_RADIUS = 0.045; // normalized to canvas height
 
 async function loadText(url) {
   const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status} ${res.statusText}`);
   return res.text();
 }
 
@@ -107,10 +108,12 @@ async function main() {
   canvas.addEventListener('pointermove', (e) => {
     pointerUV = uvFromEvent(e);
   });
-  window.addEventListener('pointerup', () => {
+  function stopPainting() {
     isPainting = false;
     lastStampUV = null;
-  });
+  }
+  window.addEventListener('pointerup', stopPainting);
+  window.addEventListener('pointercancel', stopPainting);
 
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
@@ -155,7 +158,9 @@ async function main() {
 
     if (target === 'paint' || target === 'both') {
       gl.bindFramebuffer(gl.FRAMEBUFFER, paint.read.fbo);
-      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      // brush.frag outputs premultiplied alpha (rgb already scaled by
+      // mask*strength), so use premultiplied-over blending here.
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.drawArrays(gl.TRIANGLES, 0, brushQuad.count);
     }
     if (target === 'adapt' || target === 'both') {
@@ -181,12 +186,15 @@ async function main() {
     const dy = pointerUV.y - lastStampUV.y;
     const dist = Math.hypot(dx, dy);
     const spacing = BRUSH_RADIUS * STAMP_SPACING_FACTOR;
-    const steps = Math.floor(dist / spacing);
+    // ceil (not floor) so the gap between stamps never exceeds `spacing`,
+    // and always stamp at least once per frame so holding the brush
+    // still (dist ~= 0) keeps burning the adaptation buffer.
+    const steps = Math.max(1, Math.ceil(dist / spacing));
     for (let i = 1; i <= steps; i++) {
       const t = i / steps;
       stamp({ x: lastStampUV.x + dx * t, y: lastStampUV.y + dy * t, color, target: 'both' });
     }
-    if (steps > 0) lastStampUV = { ...pointerUV };
+    lastStampUV = { ...pointerUV };
   }
 
   // --- render loop -----------------------------------------------------

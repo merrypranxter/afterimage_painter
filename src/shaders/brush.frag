@@ -18,7 +18,6 @@ void main() {
   if (uShape == 0) {
     float d = length(vLocal);
     mask = 1.0 - smoothstep(0.6, 1.0, d);
-    if (d > 1.0) mask = 0.0;
   } else {
     vec2 a = abs(vLocal);
     float d = max(a.x, a.y);

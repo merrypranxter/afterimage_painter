@@ -1,0 +1,6 @@
+{
+  "name": "afterimage_painter",
+  "private": true,
+  "type": "module",
+  "description": "Static, dependency-free WebGL2 afterimage painter. No build step; serve the repo root with any static HTTP server."
+}
